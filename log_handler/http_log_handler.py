@@ -10,6 +10,7 @@ class HttpLogHandler(logging.Handler, LoggingMixin):
     def emit(self, record):
         try:
             log_entry = self.format(record)
+            print(f"🔥 전송 로그 내용: {log_entry}")
             response = requests.post(self.url, json={"log": log_entry}, timeout=1.0)
             response.raise_for_status()
         except Exception as e:
