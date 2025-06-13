@@ -3,7 +3,7 @@ import requests
 from airflow.utils.log.logging_mixin import LoggingMixin
 
 class HttpLogHandler(logging.Handler, LoggingMixin):
-    def __init__(self, url="http://localhost:8000/log"):
+    def __init__(self, url="http://192.168.219.104:8000/log"):
         super().__init__()
         self.url = url
 
