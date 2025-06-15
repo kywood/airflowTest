@@ -1,35 +1,28 @@
+# plugins/log_handler/http_log_handler.py
+
 import logging
 import requests
-from airflow.utils.log.logging_mixin import LoggingMixin
+from airflow.utils.log.file_task_handler import FileTaskHandler
 
-class HttpLogHandler(logging.Handler, LoggingMixin):
+class HttpLogHandler(logging.Handler):
     def __init__(self, url="http://192.168.219.104:8000/log"):
         super().__init__()
         self.url = url
+        self.formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
     def emit(self, record):
         try:
             log_entry = self.format(record)
-            print(f"🔥 전송 로그 내용: {log_entry}")
-            response = requests.post(self.url, json={"log": log_entry}, timeout=1.0)
-            response.raise_for_status()
+            requests.post(self.url, json={"log": log_entry}, timeout=1.0)
         except Exception as e:
-            self.log.warning(f"HTTP 로그 전송 실패: {e}")
+            with open("/tmp/http_send_error.log", "a") as f:
+                f.write(str(e) + "\n")
 
-class FileAndHttpLogHandler(logging.Handler):
-    def __init__(self):
-        super().__init__()
-
-        self.formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-
-        # HTTP 핸들러
+class FileAndHttpLogHandler(FileTaskHandler):
+    def __init__(self, base_log_folder, filename_template):
+        super().__init__(base_log_folder, filename_template)
         self.http_handler = HttpLogHandler()
-        self.http_handler.setFormatter(self.formatter)
-
-        # 파일 핸들러
-        self.file_handler = logging.FileHandler('/tmp/airflow_http_fallback.log')
-        self.file_handler.setFormatter(self.formatter)
 
     def emit(self, record):
+        super().emit(record)
         self.http_handler.emit(record)
-        self.file_handler.emit(record)
