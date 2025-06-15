@@ -12,8 +12,8 @@ class HttpLogHandler(logging.Handler):
 
     def emit(self, record):
 
-        print(f"000000000000000000000000000000000000000000000000000000000000000")
-        with open("/tmp/emit_called.log", "a") as f:
+        print(f"111111111111111111111111111111111111")
+        with open("/tmp/emit_called1.log", "a") as f:
             f.write("✅ emit() called\n")
 
         try:
@@ -29,5 +29,9 @@ class FileAndHttpLogHandler(FileTaskHandler):
         self.http_handler = HttpLogHandler()
 
     def emit(self, record):
+        print(f"000000000000000000000000000000000000000000000000000000000000000")
+        with open("/tmp/emit_called.log", "a") as f:
+            f.write("✅ emit() called\n")
+
         super().emit(record)
         self.http_handler.emit(record)
