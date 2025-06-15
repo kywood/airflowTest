@@ -1,4 +1,11 @@
+import sys
+import os
+
+sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
+
 from plugins.log_handler.http_log_handler import FileAndHttpLogHandler
+
+
 
 LOGGING_CONFIG = {
     'version': 1,
