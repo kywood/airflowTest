@@ -14,6 +14,10 @@ LOGGING_CONFIG = {
         'task': {
             'class': 'plugins.log_handler.http_log_handler.FileAndHttpLogHandler',
             'formatter': 'airflow',
+            'initargs': {
+                'base_log_folder': '/opt/airflow/logs',
+                'filename_template': '{{ dag_id }}/{{ task_id }}/{{ execution_date }}/{{ try_number }}.log',
+            },
         },
     },
     'loggers': {
