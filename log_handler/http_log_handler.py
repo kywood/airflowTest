@@ -11,6 +11,11 @@ class HttpLogHandler(logging.Handler):
         self.formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 
     def emit(self, record):
+
+        print(f"000000000000000000000000000000000000000000000000000000000000000")
+        with open("/tmp/emit_called.log", "a") as f:
+            f.write("✅ emit() called\n")
+
         try:
             log_entry = self.format(record)
             requests.post(self.url, json={"log": log_entry}, timeout=1.0)
